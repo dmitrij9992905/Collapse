@@ -1,13 +1,13 @@
 package games.collapse.ru.collapse;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -15,34 +15,70 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class GamePage extends AppCompatActivity {
+    String tmp = "";
+    String tag = "";
+    String numString = "";
+    boolean stop = false;
+    boolean stopSignal = false;
+    String requestedNum = "3";
+    final ArrayList<String> desicion = new ArrayList<String>();
+    final ArrayList<String> ids = new ArrayList<String>();
+    final ArrayList<String> hrefs = new ArrayList<String>();
+    int pos = 0;
+    final String LOG_TAG = "Brief reading";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_page);
-        String tmp = "";
-        String tag = "";
-        String numString = "";
-        boolean stop = false;
-        boolean stopSignal = false;
-        String requestedNum = "3";
+
         ListView listView = (ListView) findViewById(R.id.vars_select);
 
-        final ArrayList<String> desicion = new ArrayList<String>();
-        final ArrayList<String> ids = new ArrayList<String>();
-        final ArrayList<String> hrefs = new ArrayList<String>();
-        int pos = 0;
+
 
         // Создаём адаптер ArrayAdapter, чтобы привязать массив к ListView
         final ArrayAdapter<String> adapter;
         adapter = new ArrayAdapter<String>(this,
                 R.layout.list_item, desicion);
         listView.setAdapter(adapter);
-        final String LOG_TAG = "Brief reading";
+
+        parseXML();
+        adapter.notifyDataSetChanged();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
+                                    long id) {
+                switch (position) {
+                    case 0:
+                        Toast.makeText(getApplicationContext(), "Нажмите бриф для сохранения",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        requestedNum = null;
+
+                        requestedNum = hrefs.get(position-1);
+                        Toast.makeText(getApplicationContext(), requestedNum,
+                                Toast.LENGTH_SHORT).show();
+                        ids.clear();
+                        hrefs.clear();
+                        adapter.clear();
+
+                        parseXML();
+
+                        adapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+
+    XmlPullParser prepareXpp() {
+        return getResources().getXml(R.xml.briefs);
+    }
+
+    void parseXML() {
         try {
             stop = false;
             XmlPullParser xpp = prepareXpp();
@@ -88,7 +124,7 @@ public class GamePage extends AppCompatActivity {
                     case XmlPullParser.TEXT:
                         if (tag.equals("text")&&numString.equals(requestedNum)) desicion.add(xpp.getText());
                         if (tag.equals("var")&&numString.equals(requestedNum)) desicion.add(xpp.getText());
-                        Toast.makeText(this, numString, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(this, numString, Toast.LENGTH_LONG).show();
                         //Log.d(LOG_TAG, "text = " + xpp.getText());
                         tag = "";
                         break;
@@ -108,11 +144,6 @@ public class GamePage extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        adapter.notifyDataSetChanged();
-    }
-
-    XmlPullParser prepareXpp() {
-        return getResources().getXml(R.xml.briefs);
     }
 
 }
