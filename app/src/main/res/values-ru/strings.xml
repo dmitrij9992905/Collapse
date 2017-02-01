@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Collapse</string>
+    <string name="continue_text">Продолжить</string>
+    <string name="newgame_text">Новая игра</string>
+    <string name="about_text">Об игре</string>
+    <string name="exit_text">Выйти из игры</string>
+    <string name="settings_text">Настройки</string>
+    <string name="loadgame_text">Загрузить игру</string>
+</resources>
