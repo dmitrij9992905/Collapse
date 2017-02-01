@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Collapse</string>
+    <string name="title_activity_game" translatable="false">GameActivity</string>
+    <string name="continue_text">Continue</string>
+    <string name="newgame_text">New Game</string>
+    <string name="about_text">About</string>
+    <string name="exit_text">Exit</string>
+    <string name="loadgame_text">Load Game</string>
+    <string name="settings_text">Settings</string>
+</resources>
